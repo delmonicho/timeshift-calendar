@@ -1,3 +1,4 @@
+<!-- TODO: make drag and drop change database entry on drop OR prevent drag -->
 <template>
   <div>
     <ValidationObserver ref="observer" v-slot="{ invalid }">

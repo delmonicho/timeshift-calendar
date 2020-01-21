@@ -1,0 +1,48 @@
+{
+	"blocks":
+	{
+		"lt_id": "exampleid",
+		"title": "Demo 1",
+		"start": "May 1,2019",
+		"end": "May 21, 2019",
+		"uids": "user_id1"
+	},
+	"events":
+	{
+		"id": "exampleid",
+		"title": "Demo 1",
+		"start": "May 1,2019",
+		"end": "May 21, 2019",
+		"uid": "user_id1",
+		"lists": ["listid1","listid2"],
+		"recurring": "daily"
+	},
+	"lists":
+	{
+		"name": "charlie",
+		"color": "#ffffff",
+		"tasks": ["Finish sprint cycle IV"],
+		"list_id": "exampleID",
+		"shared_users": ["charlie","murphy"],
+		"uids": "user_id1"
+	},
+	"tasks":
+	{
+		"name": "exampleid",
+		"due": {"date": "2019-23-19", "time": "T13:34:00.000"},
+		"est": 3000,
+		"alg": 4500, //dont store in dB but just store user specified data
+		"aid": "exampleAID",
+		"uids": "user_id1",
+		"lists": ["listid1","listid2"],
+		"recurring": "weekly"
+	},
+	"users":
+	{
+		"first_name": "Elon",
+		"last_name": "Tusk",
+		"email": "inMuskWeTusk@elon.com",
+		"uid": "user_id1",
+		"listPositions": ["listid2","listid1"]
+	}
+}

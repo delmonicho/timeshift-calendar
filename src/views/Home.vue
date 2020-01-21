@@ -1,6 +1,12 @@
 <script> //This template page is the container for the calendar </script>
+<!-- MAKE SURE connected to mongoDB for next demo -->
+<!-- fix endpoints to all data in the dB -->
 <template>
   <div class="page">
+    <div class="titles" style="text-align: center">
+      <h1>TIMESHIFT</h1>
+      <h3>Scheduling Optimization at its finest</h3>
+    </div>
     <div style="width: 100%;  padding: 80px 20px 40px 40px; text-align: center;">
           <div class="row">
               <div class="col-md-6">
