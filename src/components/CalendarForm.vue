@@ -82,21 +82,56 @@ export default {
       let start = this.form.start;
       let end = this.form.end;
       let title = this.form.title;
-      let event = { start, end, title };
+      let id = this.form.id;
       if (this.edit) {
+        //need to access proper id to edit correct events
+        //set id := mongo id made at posting
+        //how to access id when click edit event?
+        let event = { start, end, title, id };
         await this.editCalendar(event);
       } else {
+        let event = { start, end, title };
         await this.addCalendar(event);
       }
       const response = await this.getCalendar();
-      console.log(response.data);
-      this.$store.commit("setEvents", response.data);
+      //res_data is the reformatted json body to store calendar array of events for Vuex store
+      const res_data = [];
+      //parse through response.data to save start,end,title, and id in a calendar array
+      //for each observation in response.data
+      var obs;
+      for (obs in response.data) {
+        res_data[obs] = {
+          "start": response.data[obs].blocks.start,
+          "end": response.data[obs].blocks.end,
+          "title": response.data[obs].blocks.title,
+          "id": response.data[obs]._id
+        }
+      }
+      this.$store.commit("setEvents", res_data);
+      //console.log("onSubmit(): " + res_data);
+      //reload document page onSubmit()
+      location.reload();
       this.$emit("eventSaved");
     },
     async deleteEvent(id) {
       await this.deleteCalendar(id);
+      //TOBE: Functionalized
       const response = await this.getCalendar();
-      this.$store.commit("setEvents", response.data);
+      //res_data is the reformatted json body to store calendar array of events for Vuex store
+      const res_data = [];
+      //parse through response.data to save start,end,title, and id in a calendar array
+      //for each observation in response.data
+      var obs;
+      for (obs in response.data) {
+        res_data[obs] = {
+          "start": response.data[obs].blocks.start,
+          "end": response.data[obs].blocks.end,
+          "title": response.data[obs].blocks.title,
+          "id": response.data[obs]._id
+        }
+      }
+      this.$store.commit("setEvents", res_data);
+      console.log("deleteEvent(): " + res_data);
       this.$emit("eventSaved");
     }
   }

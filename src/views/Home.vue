@@ -84,7 +84,7 @@ export default {
       // so the response.data before would look like
       /*
       {
-        "calendar": [
+        "events": [
           {
             "id": 1,
             "start": "2019-12-19 06:02:46",
@@ -99,29 +99,21 @@ export default {
           }
       }
       */
-      //res_data is the reformatted json body to store calendar aray of events for Vuex store
-      //TODO: parse through response.data to save start,end,title, and id in a calendar array for each item i in response.data
-
-      const res_data = {
-        "calendar": []
-      }
-      //console.log(response.data.length);
+      //res_data is the reformatted json body to store calendar array of events for Vuex store
+      const res_data = [];
+      //parse through response.data to save start,end,title, and id in a calendar array
+      //for each observation in response.data
       var obs;
       for (obs in response.data) {
-        //console.log(obs + ' ' + response.data[obs]._id);
-        res_data.calendar[obs] = {
+        res_data[obs] = {
           "start": response.data[obs].blocks.start,
           "end": response.data[obs].blocks.end,
           "title": response.data[obs].blocks.title,
           "id": response.data[obs]._id
         }
       }
-      var ev;
-      for (ev in this.$store.events) {
-        console.log('ev' + ev);
-      }
       this.$store.commit("setEvents", res_data);
-      console.log(res_data.calendar);
+      console.log("getEvents(): " + res_data);
     },
     closeModal() {
       this.$refs["add-modal"].hide();
@@ -138,71 +130,29 @@ export default {
     },
     async remove() {
 
-        //reverse list order to pop off first item in list
-        this.todos.reverse();
-        //save event to db.json
-        //store event in available space in calendar
+        while (this.todos.length > 0)
+        {
+          //reverse list order to pop off first item in list
+          this.todos.reverse();
+          //save event to db.json
+          //store event in available space in calendar
 
-        const task = this.todos.pop();
-        //let id = task.index;
-        let start = moment(currentDate).format("YYYY-MM-DD HH:mm:ss");
-        let end = moment(currentDate.setHours(currentDate.getHours() + task[1])).format("YYYY-MM-DD HH:mm:ss");
-        let title = task[0];
-        let event = {
-        	"blocks":
-        	{
-        		"lt_id": "exampleid",
-        		"title": title,
-        		"start": start,
-        		"end": end,
-        		"uids": "user"
-        	},
-        	"events":
-        	{
-        		"id": "exampleid",
-        		"title": title,
-        		"start": start,
-        		"end": end,
-        		"uid": "user",
-        		"lists": ["listid1","listid2"],
-        		"recurring": "daily"
-        	},
-        	"lists":
-        	{
-        		"name": "charlie",
-        		"color": "#ffffff",
-        		"tasks": ["Finish sprint cycle IV"],
-        		"list_id": "exampleID",
-        		"shared_users": ["charlie","murphy"],
-        		"uids": "user_id1"
-        	},
-        	"tasks":
-        	{
-        		"name": "id",
-        		"due": {"date": "2019-23-19", "time": "T13:34:00.000"},
-        		"est": 3000,
-        		"alg": 4500, //dont store in dB but just store user specified data
-        		"aid": "exampleAID",
-        		"uids": "user_id1",
-        		"lists": ["listid1","listid2"],
-        		"recurring": "weekly"
-        	},
-        	"users":
-        	{
-        		"first_name": "Elon",
-        		"last_name": "Tusk",
-        		"email": "inMuskWeTusk@elon.com",
-        		"uid": "user_id1",
-        		"listPositions": ["listid2","listid1"]
-        	}
+          const task = this.todos.pop();
+          //let id = task.index;
+          let start = moment(currentDate.setHours(currentDate.getHours() + (Math.random()) * 10)).format("YYYY-MM-DD HH:mm:ss");
+          let end = moment(currentDate.setHours(currentDate.getHours() + task[1])).format("YYYY-MM-DD HH:mm:ss");
+          let title = task[0];
+          //console.log(start,end,title);
+          this.calendarEvent = { start, end, title };
+          await this.addCalendar(this.calendarEvent);
+
+          //reverse back to maintain order
+          this.todos.reverse();
         }
-        console.log(start,end,title);
-        this.calendarEvent = { start, end, title };
-        await this.addCalendar(this.calendarEvent);
-
-
-        //reverse back to maintain order
-        this.todos.reverse();
+        if(this.todos.length == 0)
+        {
+          location.reload();
+        }
     }
   }
 };
