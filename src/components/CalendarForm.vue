@@ -45,6 +45,7 @@
   </div>
 </template>
 <script>
+
 import { requestsMixin } from "../mixins/requestsMixin";
 import * as moment from "moment";
 export default {
@@ -74,14 +75,21 @@ export default {
       if (!isValid) {
         return;
       }
+
       this.form.start = moment(this.form.start).format("YYYY-MM-DD HH:mm:ss");
       this.form.end = moment(this.form.end).format("YYYY-MM-DD HH:mm:ss");
+      //console.log("Check this form " + this.form + this.form.start + this.form.title);
+      let start = this.form.start;
+      let end = this.form.end;
+      let title = this.form.title;
+      let event = { start, end, title };
       if (this.edit) {
-        await this.editCalendar(this.form);
+        await this.editCalendar(event);
       } else {
-        await this.addCalendar(this.form);
+        await this.addCalendar(event);
       }
       const response = await this.getCalendar();
+      console.log(response.data);
       this.$store.commit("setEvents", response.data);
       this.$emit("eventSaved");
     },

@@ -54,7 +54,6 @@
 import CalendarForm from "@/components/CalendarForm.vue";
 import { requestsMixin } from "../mixins/requestsMixin";
 import * as moment from "moment";
-var idCount = 0;
 var currentDate = new Date();
 export default {
   name: "home",
@@ -71,7 +70,8 @@ export default {
     return {
       calendarEvent: {},
       todos: [],
-      input: ''
+      input: '',
+      hours:''
     };
   },
   async beforeMount() {
@@ -80,7 +80,48 @@ export default {
   methods: {
     async getEvents() {
       const response = await this.getCalendar();
-      this.$store.commit("setEvents", response.data);
+      //Vuex store is expecting events to look like original tutorial version
+      // so the response.data before would look like
+      /*
+      {
+        "calendar": [
+          {
+            "id": 1,
+            "start": "2019-12-19 06:02:46",
+            "end": "2019-12-19 09:02:46",
+            "title": "Grade late assignments"
+          },
+          {
+            "start": this.$store.state.events[17].blocks.start,
+            "end": this.$store.state.events[17].blocks.end,
+            "title": this.$store.state.events[17].blocks.title,
+            "id": this.$store.state.events[17]._id
+          }
+      }
+      */
+      //res_data is the reformatted json body to store calendar aray of events for Vuex store
+      //TODO: parse through response.data to save start,end,title, and id in a calendar array for each item i in response.data
+
+      const res_data = {
+        "calendar": []
+      }
+      //console.log(response.data.length);
+      var obs;
+      for (obs in response.data) {
+        //console.log(obs + ' ' + response.data[obs]._id);
+        res_data.calendar[obs] = {
+          "start": response.data[obs].blocks.start,
+          "end": response.data[obs].blocks.end,
+          "title": response.data[obs].blocks.title,
+          "id": response.data[obs]._id
+        }
+      }
+      var ev;
+      for (ev in this.$store.events) {
+        console.log('ev' + ev);
+      }
+      this.$store.commit("setEvents", res_data);
+      console.log(res_data.calendar);
     },
     closeModal() {
       this.$refs["add-modal"].hide();
@@ -94,12 +135,6 @@ export default {
     },
     async add() {
         this.todos.push([this.input,this.hours]);
-        // let id = this.index;
-        // let title = this.input;
-        // let start = moment(currentDate).format("YYYY-MM-DD HH:mm:ss");
-        // let end = moment(currentDate.setHours(currentDate.getHours() + 2)).format("YYYY-MM-DD HH:mm:ss");
-        // this.calendarEvent = { id, start, end, title };
-        // await this.addCalendar(this.calendarEvent);
     },
     async remove() {
 
@@ -109,12 +144,60 @@ export default {
         //store event in available space in calendar
 
         const task = this.todos.pop();
-        let id = task.index;
+        //let id = task.index;
         let start = moment(currentDate).format("YYYY-MM-DD HH:mm:ss");
         let end = moment(currentDate.setHours(currentDate.getHours() + task[1])).format("YYYY-MM-DD HH:mm:ss");
         let title = task[0];
-        console.log(id,start,end,title);
-        this.calendarEvent = { id, start, end, title };
+        let event = {
+        	"blocks":
+        	{
+        		"lt_id": "exampleid",
+        		"title": title,
+        		"start": start,
+        		"end": end,
+        		"uids": "user"
+        	},
+        	"events":
+        	{
+        		"id": "exampleid",
+        		"title": title,
+        		"start": start,
+        		"end": end,
+        		"uid": "user",
+        		"lists": ["listid1","listid2"],
+        		"recurring": "daily"
+        	},
+        	"lists":
+        	{
+        		"name": "charlie",
+        		"color": "#ffffff",
+        		"tasks": ["Finish sprint cycle IV"],
+        		"list_id": "exampleID",
+        		"shared_users": ["charlie","murphy"],
+        		"uids": "user_id1"
+        	},
+        	"tasks":
+        	{
+        		"name": "id",
+        		"due": {"date": "2019-23-19", "time": "T13:34:00.000"},
+        		"est": 3000,
+        		"alg": 4500, //dont store in dB but just store user specified data
+        		"aid": "exampleAID",
+        		"uids": "user_id1",
+        		"lists": ["listid1","listid2"],
+        		"recurring": "weekly"
+        	},
+        	"users":
+        	{
+        		"first_name": "Elon",
+        		"last_name": "Tusk",
+        		"email": "inMuskWeTusk@elon.com",
+        		"uid": "user_id1",
+        		"listPositions": ["listid2","listid1"]
+        	}
+        }
+        console.log(start,end,title);
+        this.calendarEvent = { start, end, title };
         await this.addCalendar(this.calendarEvent);
 
 
