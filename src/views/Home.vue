@@ -9,6 +9,7 @@
     </div>
     <div style="width: 100%;  padding: 80px 20px 40px 40px; text-align: center;">
           <div class="row">
+            <!-- CREATE TASK INPUT FORMS  -->
               <div class="col-md-6">
                   <div class="well">
                       <h2>Create a New Task</h2>
@@ -22,11 +23,12 @@
                       </form>
                   </div>
               </div>
+              <!-- TASKS LIST -->
               <div class="col-md-6">
                   <h2>Tasks List</h2>
                   <ul class="list-group">
                       <li v-for="(todo, index) in todos" :key="index" class="list-group-item">
-                          {{ index }}: {{ todo[0] }} - {{ todo[1] }} hours
+                          {{ todo[0] }} - {{ todo[1] }} hours
                       </li>
                   </ul>
                   <b-button type="button" v-on:click="remove()">Fill Calendar</b-button>
@@ -34,10 +36,12 @@
           </div>
     </div>
     <div style="width: 100%; padding: 0px 20px 40px 40px; text-align:center;">
+      <!-- ADD CALENDAR EVENT BUTTON -->
       <div class="buttons">
         <b-button v-b-modal.add-modal>Add Calendar Event</b-button>
       </div>
-      <full-calendar :events="events" @event-selected="openEditModal" defaultView="agendaDay" />
+      <!-- FULL CALENDAR COMPONENT -->
+      <full-calendar :events="events" @event-selected="openEditModal" defaultView="listWeek" />
         <b-modal id="add-modal" title="Add Calendar Event" hide-footer ref="add-modal">
           <CalendarForm :edit="false" @eventSaved="closeModal()" ref="add-event"/>
         </b-modal>
@@ -82,23 +86,7 @@ export default {
       const response = await this.getCalendar();
       //Vuex store is expecting events to look like original tutorial version
       // so the response.data before would look like
-      /*
-      {
-        "events": [
-          {
-            "id": 1,
-            "start": "2019-12-19 06:02:46",
-            "end": "2019-12-19 09:02:46",
-            "title": "Grade late assignments"
-          },
-          {
-            "start": this.$store.state.events[17].blocks.start,
-            "end": this.$store.state.events[17].blocks.end,
-            "title": this.$store.state.events[17].blocks.title,
-            "id": this.$store.state.events[17]._id
-          }
-      }
-      */
+
       //res_data is the reformatted json body to store calendar array of events for Vuex store
       const res_data = [];
       //parse through response.data to save start,end,title, and id in a calendar array
@@ -129,7 +117,7 @@ export default {
         this.todos.push([this.input,this.hours]);
     },
     async remove() {
-
+        //fill in calendar with all tasks from todo list
         while (this.todos.length > 0)
         {
           //reverse list order to pop off first item in list
