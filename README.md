@@ -31,4 +31,4 @@ npm run build
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ## Modifying the front end code
-# Main files edited so far at CalendarForm.vue in Components folder and Home.vue in views folder
+### Main files edited so far at CalendarForm.vue in Components folder and Home.vue in views folder
