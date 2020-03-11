@@ -1,4 +1,4 @@
-const APIURL = "http://localhost:3000";
+const APIURL = "";
 const axios = require("axios");
 
 var entry = {
@@ -62,7 +62,7 @@ export const requestsMixin = {
       entry.blocks.title = title;
       entry.blocks.start = start;
       entry.blocks.end = end;
-      
+
       return axios.post(`${APIURL}/entries`, entry);
     },
     editCalendar(data) {
